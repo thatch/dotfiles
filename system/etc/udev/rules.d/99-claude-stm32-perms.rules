@@ -1,0 +1,12 @@
+# ST-LINK debug probes (V2, V2-1, V3 — all STMicroelectronics VID 0483)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE="0660", OWNER="claude"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE="0660", OWNER="claude"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374e", MODE="0660", OWNER="claude"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374f", MODE="0660", OWNER="claude"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3752", MODE="0660", OWNER="claude"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3753", MODE="0660", OWNER="claude"
+
+# Any USB CDC-ACM device (interface class 0x02), regardless of VID — covers the
+# blue pill's hand-wired USB CDC, the L152 Nucleo's onboard VCP, etc.
+SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="02", MODE="0660", OWNER="claude"
+SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{bInterfaceClass}=="02", MODE="0660", OWNER="claude"
