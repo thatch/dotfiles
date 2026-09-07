@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+"""Copy a long URL from tmux pane text to the clipboard.
+
+Reads pane text from stdin, finds URLs (tmux should use capture-pane -J to join
+soft-wrapped lines), and copies the last long-ish URL via pbcopy.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import subprocess
+import sys
+
+MIN_URL_LENGTH = int(os.environ.get("COPY_URL_MIN_LENGTH", "60"))
+
+URL_RE = re.compile(r"https?://[^\s<>'\"`]+")
+TRAILING = ").,;:!?]}"
+
+
+def clean_url(url: str) -> str:
+    while url and url[-1] in TRAILING:
+        url = url[:-1]
+    return url
+
+
+def main() -> int:
+    text = sys.stdin.read()
+    urls = []
+    seen = set()
+
+    for match in URL_RE.finditer(text):
+        url = clean_url(match.group(0))
+        if len(url) < MIN_URL_LENGTH:
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        urls.append(url)
+
+    if not urls:
+        print(f"copy-url-from-pane: no URL >= {MIN_URL_LENGTH} chars found", file=sys.stderr)
+        return 1
+
+    url = urls[-1]
+    pbcopy = shutil.which("pbcopy") or os.path.expanduser("~/.local/bin/pbcopy")
+    if not os.path.exists(pbcopy):
+        sibling = os.path.join(os.path.dirname(__file__), "pbcopy")
+        if os.path.exists(sibling):
+            pbcopy = sibling
+    if not os.path.exists(pbcopy):
+        print("copy-url-from-pane: pbcopy not found", file=sys.stderr)
+        return 1
+
+    subprocess.run([pbcopy], input=url.encode(), check=True)
+    print(f"copied URL: {url}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

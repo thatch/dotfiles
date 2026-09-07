@@ -1,0 +1,10 @@
+# dotfiles zsh config
+
+# User-local scripts.
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# Git branch/tab completion and git aliases.
+[ -r "$HOME/.local/share/dotfiles/git-completion.sh" ] && . "$HOME/.local/share/dotfiles/git-completion.sh"

@@ -1,0 +1,11 @@
+# Initial window size, in terminal cells.
+window-width = 120
+window-height = 30
+
+# Disable programming ligatures like !=, ==, => rendering as combined glyphs.
+font-feature = -calt, -liga, -dlig
+
+# Allow OSC 52 clipboard integration over ssh/tmux for pbcopy/pbpaste helpers.
+# Reads prompt by default because remote clipboard reads are security-sensitive.
+clipboard-write = allow
+clipboard-read = ask

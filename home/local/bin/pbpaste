@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# pbpaste for Linux/SSH/tmux using OSC 52 clipboard query escape sequences.
+# Ghostty must allow clipboard reads (`clipboard-read = allow`, or `ask`).
+# tmux needs `set -g get-clipboard request` to ask the outer terminal.
+
+if [ "$(uname -s)" = "Darwin" ] && [ -x /usr/bin/pbpaste ]; then
+  exec /usr/bin/pbpaste "$@"
+fi
+
+if [ "$#" -gt 0 ]; then
+  printf 'usage: pbpaste\n' >&2
+  exit 2
+fi
+
+python3 - <<'PY'
+import base64
+import os
+import re
+import select
+import sys
+import termios
+import time
+import tty
+
+try:
+    fd = os.open('/dev/tty', os.O_RDWR | os.O_NOCTTY)
+except OSError as e:
+    print(f'pbpaste: no controlling tty: {e}', file=sys.stderr)
+    raise SystemExit(1)
+
+old = termios.tcgetattr(fd)
+try:
+    tty.setraw(fd)
+    # OSC 52 clipboard query: ESC ] 52 ; c ; ? BEL
+    os.write(fd, b'\x1b]52;c;?\x07')
+
+    deadline = time.monotonic() + 3.0
+    data = bytearray()
+    while time.monotonic() < deadline:
+        r, _, _ = select.select([fd], [], [], max(0, deadline - time.monotonic()))
+        if not r:
+            break
+        chunk = os.read(fd, 4096)
+        if not chunk:
+            break
+        data.extend(chunk)
+        if b'\x07' in data or b'\x1b\\' in data:
+            break
+finally:
+    termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    os.close(fd)
+
+# Response: ESC ] 52 ; c ; BASE64 BEL  (or ST instead of BEL)
+m = re.search(rb'\x1b\]52;[^;]*;([^\x07\x1b]*)(?:\x07|\x1b\\)', bytes(data), re.S)
+if not m:
+    print('pbpaste: no OSC 52 clipboard response', file=sys.stderr)
+    raise SystemExit(1)
+
+payload = m.group(1)
+try:
+    sys.stdout.buffer.write(base64.b64decode(payload, validate=False))
+except Exception as e:
+    print(f'pbpaste: could not decode OSC 52 response: {e}', file=sys.stderr)
+    raise SystemExit(1)
+PY

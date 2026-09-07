@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# pbcopy for Linux/SSH/tmux using OSC 52 clipboard escape sequences.
+# Ghostty defaults to allowing OSC 52 clipboard writes. tmux needs
+# `set -g set-clipboard on` so pane applications can set the outer clipboard.
+#
+# Safety: empty stdin is a no-op by default. This avoids `pbpaste | pbcopy`
+# clearing the clipboard when `pbpaste` failed or was denied. Use --clear to
+# intentionally set the clipboard to empty.
+
+if [ "$(uname -s)" = "Darwin" ] && [ -x /usr/bin/pbcopy ]; then
+  exec /usr/bin/pbcopy "$@"
+fi
+
+clear=false
+case "${1-}" in
+  --clear)
+    clear=true
+    shift
+    ;;
+esac
+
+if [ "$#" -gt 0 ]; then
+  printf 'usage: pbcopy [--clear] < input\n' >&2
+  exit 2
+fi
+
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+cat > "$tmp"
+
+if [ ! -s "$tmp" ] && [ "$clear" != true ]; then
+  printf 'pbcopy: empty stdin; not changing clipboard (use --clear to clear)\n' >&2
+  exit 1
+fi
+
+payload="$(base64 < "$tmp" | tr -d '\n')"
+
+if [ -e /dev/tty ]; then
+  printf '\033]52;c;%s\a' "$payload" > /dev/tty
+else
+  printf 'pbcopy: no controlling tty for OSC 52 clipboard write\n' >&2
+  exit 1
+fi
