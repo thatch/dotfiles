@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mkdir -p "$HOME/.ssh"
+ssh-agent > "$HOME/.ssh/agent-config.sh"
+chmod 600 "$HOME/.ssh/agent-config.sh"
+. "$HOME/.ssh/agent-config.sh"
+ssh-add "$HOME/.ssh/id_rsa" "$HOME/.ssh/id_rsa_github"

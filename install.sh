@@ -51,6 +51,8 @@ link_one "$DOTFILES_DIR/home/tmux.conf" "$HOME/.tmux.conf"
 link_one "$DOTFILES_DIR/home/local/bin/pbcopy" "$HOME/.local/bin/pbcopy"
 link_one "$DOTFILES_DIR/home/local/bin/pbpaste" "$HOME/.local/bin/pbpaste"
 link_one "$DOTFILES_DIR/home/local/bin/copy-url-from-pane" "$HOME/.local/bin/copy-url-from-pane"
+link_one "$DOTFILES_DIR/home/local/bin/newagent" "$HOME/.local/bin/newagent"
+link_one "$DOTFILES_DIR/home/local/share/dotfiles/shell-config.sh" "$HOME/.local/share/dotfiles/shell-config.sh"
 link_one "$DOTFILES_DIR/home/local/share/dotfiles/git-completion.sh" "$HOME/.local/share/dotfiles/git-completion.sh"
 
 link_one "$DOTFILES_DIR/home/config/ghostty/config" "$HOME/.config/ghostty/config"
