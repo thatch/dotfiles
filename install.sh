@@ -48,6 +48,7 @@ link_one "$DOTFILES_DIR/home/zshrc" "$HOME/.zshrc"
 link_one "$DOTFILES_DIR/home/vimrc" "$HOME/.vimrc"
 link_one "$DOTFILES_DIR/home/tmux.conf" "$HOME/.tmux.conf"
 
+link_one "$DOTFILES_DIR/home/local/bin/git-co-upstream-pr" "$HOME/.local/bin/git-co-upstream-pr"
 link_one "$DOTFILES_DIR/home/local/bin/pbcopy" "$HOME/.local/bin/pbcopy"
 link_one "$DOTFILES_DIR/home/local/bin/pbpaste" "$HOME/.local/bin/pbpaste"
 link_one "$DOTFILES_DIR/home/local/bin/copy-url-from-pane" "$HOME/.local/bin/copy-url-from-pane"
@@ -64,6 +65,7 @@ link_one "$DOTFILES_DIR/home/pi/agent/skills/skel" "$HOME/.pi/agent/skills/skel"
 
 link_one "$DOTFILES_DIR/home/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 link_one "$DOTFILES_DIR/home/claude/style.md" "$HOME/.claude/style.md"
+link_one "$DOTFILES_DIR/home/claude/commit-style.md" "$HOME/.claude/commit-style.md"
 
 ensure_git_repo \
   "https://github.com/mgedmin/coverage-highlight.vim.git" \
