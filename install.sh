@@ -93,6 +93,7 @@ link_one "$DOTFILES_DIR/home/config/xfce4/terminal/terminalrc" "$HOME/.config/xf
 link_one "$DOTFILES_DIR/home/pi/agent/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
 link_one "$DOTFILES_DIR/home/pi/agent/extensions/style-md.ts" "$HOME/.pi/agent/extensions/style-md.ts"
 link_one "$DOTFILES_DIR/home/pi/agent/skills/skel" "$HOME/.pi/agent/skills/skel"
+merge_json "$DOTFILES_DIR/home/pi/agent/settings.json" "$HOME/.pi/agent/settings.json"
 
 link_one "$DOTFILES_DIR/home/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 link_one "$DOTFILES_DIR/home/claude/style.md" "$HOME/.claude/style.md"
