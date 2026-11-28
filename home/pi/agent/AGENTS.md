@@ -1,5 +1,7 @@
 # User Instructions
 
+- Keep Git commit subjects to 88 characters or fewer. Hard-wrap commit body prose at 88 characters using actual newlines, not display wrapping.
+
 - When looking up documentation for a PyPI package, check the PyPI JSON API first for README/project description contents before falling back to installed source inspection. Example: `python - <<'PY'
 import json, urllib.request
 name = "PACKAGE_NAME"
